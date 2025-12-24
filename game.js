@@ -335,16 +335,11 @@ function deleteLetter() {
 
 // Submit guess
 function submitGuess() {
+  if (gameState.gameOver) return;
   if (gameState.guesses.length >= MAX_ATTEMPTS) return;
   
   if (gameState.currentGuess.length !== WORD_LENGTH) {
     showToast('Not enough letters');
-    shakeRow();
-    return;
-  }
-  
-  if (!VALID_WORDS.has(gameState.currentGuess)) {
-    showToast('Not in word list');
     shakeRow();
     return;
   }
