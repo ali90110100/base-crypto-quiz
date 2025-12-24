@@ -168,6 +168,14 @@ function getTodaysPuzzle() {
 
 // Initialize the game
 function initGame() {
+  // Clear old game data to ensure fresh evaluation with fixed algorithm
+  const GAME_VERSION = 2;
+  const savedVersion = localStorage.getItem('cryptoPuzzleVersion');
+  if (savedVersion !== String(GAME_VERSION)) {
+    localStorage.removeItem('cryptoPuzzleGame');
+    localStorage.setItem('cryptoPuzzleVersion', GAME_VERSION);
+  }
+  
   loadStats();
   
   const puzzle = getTodaysPuzzle();
