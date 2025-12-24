@@ -1,0 +1,28 @@
+{
+  "accountAssociation": {
+    "header": "[FROM FARCASTER]",
+    "payload": "[FROM FARCASTER]",
+    "signature": "[FROM FARCASTER]"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Daily Crypto Puzzle",
+    "subtitle": "Wordle for crypto lovers",
+    "description": "Guess the daily 5-letter crypto word in 6 tries! Get green, yellow, or gray feedback for each guess. Track your stats, maintain streaks, and share your results on Farcaster.",
+    "iconUrl": "https://[DOMAIN]/icon.png",
+    "homeUrl": "https://[DOMAIN]",
+    "imageUrl": "https://[DOMAIN]/preview.png",
+    "splashImageUrl": "https://[DOMAIN]/icon.png",
+    "splashBackgroundColor": "#0a0e17",
+    "primaryCategory": "games",
+    "tags": ["game", "puzzle", "crypto", "wordle", "farcaster"],
+    "tagline": "Daily crypto word challenge",
+    "heroImageUrl": "https://[DOMAIN]/preview.png",
+    "screenshotUrls": ["https://[DOMAIN]/preview.png"],
+    "ogTitle": "Daily Crypto Puzzle",
+    "ogDescription": "Guess the 5-letter crypto word in 6 tries!",
+    "ogImageUrl": "https://[DOMAIN]/preview.png"
+  }
+}
+
+

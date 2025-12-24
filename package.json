@@ -1,0 +1,22 @@
+{
+  "name": "daily-crypto-puzzle",
+  "version": "1.0.0",
+  "description": "A daily Wordle-style word game for crypto enthusiasts on Farcaster",
+  "scripts": {
+    "dev": "npx serve . -p 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "keywords": [
+    "farcaster",
+    "mini-app",
+    "game",
+    "crypto",
+    "wordle"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
+
