@@ -373,31 +373,36 @@ function submitGuess() {
   saveGameState();
 }
 
-// Get guess result
+// Get guess result - follows official Wordle rules
 function getGuessResult(guess) {
+  const solution = gameState.solution.toUpperCase();
+  const guessUpper = guess.toUpperCase();
   const result = Array(WORD_LENGTH).fill('absent');
-  const solutionLetters = gameState.solution.split('');
-  const guessLetters = guess.split('');
+  const solutionUsed = Array(WORD_LENGTH).fill(false);
   
-  // First pass: mark correct letters
+  // First pass: mark exact position matches (GREEN)
   for (let i = 0; i < WORD_LENGTH; i++) {
-    if (guessLetters[i] === solutionLetters[i]) {
+    if (guessUpper[i] === solution[i]) {
       result[i] = 'correct';
-      solutionLetters[i] = null;
-      guessLetters[i] = null;
+      solutionUsed[i] = true;
     }
   }
   
-  // Second pass: mark present letters
+  // Second pass: mark letters in wrong position (YELLOW)
+  // Only if that letter exists in an unused position of the solution
   for (let i = 0; i < WORD_LENGTH; i++) {
-    if (guessLetters[i] === null) continue;
-    const index = solutionLetters.indexOf(guessLetters[i]);
-    if (index !== -1) {
-      result[i] = 'present';
-      solutionLetters[index] = null;
+    if (result[i] === 'correct') continue;
+    
+    for (let j = 0; j < WORD_LENGTH; j++) {
+      if (!solutionUsed[j] && guessUpper[i] === solution[j]) {
+        result[i] = 'present';
+        solutionUsed[j] = true;
+        break;
+      }
     }
   }
   
+  // All remaining letters stay 'absent' (GRAY)
   return result;
 }
 
