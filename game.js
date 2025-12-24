@@ -219,9 +219,11 @@ function renderSavedGame() {
   createBoard();
   gameState.guesses.forEach((guess, rowIndex) => {
     const row = boardEl.children[rowIndex];
+    if (!row) return;
     const result = getGuessResult(guess);
     for (let i = 0; i < WORD_LENGTH; i++) {
       const tile = row.children[i];
+      if (!tile) continue;
       tile.textContent = guess[i];
       tile.classList.add('filled', result[i]);
     }
@@ -303,12 +305,17 @@ function handleKeyPress(key) {
 // Add letter
 function addLetter(letter) {
   if (gameState.currentGuess.length >= WORD_LENGTH) return;
+  if (gameState.guesses.length >= MAX_ATTEMPTS) return;
+  
+  const row = boardEl.children[gameState.guesses.length];
+  if (!row) return;
   
   gameState.currentGuess += letter;
-  const row = boardEl.children[gameState.guesses.length];
   const tile = row.children[gameState.currentGuess.length - 1];
-  tile.textContent = letter;
-  tile.classList.add('filled');
+  if (tile) {
+    tile.textContent = letter;
+    tile.classList.add('filled');
+  }
 }
 
 // Delete letter
@@ -316,14 +323,20 @@ function deleteLetter() {
   if (gameState.currentGuess.length === 0) return;
   
   const row = boardEl.children[gameState.guesses.length];
+  if (!row) return;
+  
   const tile = row.children[gameState.currentGuess.length - 1];
-  tile.textContent = '';
-  tile.classList.remove('filled');
+  if (tile) {
+    tile.textContent = '';
+    tile.classList.remove('filled');
+  }
   gameState.currentGuess = gameState.currentGuess.slice(0, -1);
 }
 
 // Submit guess
 function submitGuess() {
+  if (gameState.guesses.length >= MAX_ATTEMPTS) return;
+  
   if (gameState.currentGuess.length !== WORD_LENGTH) {
     showToast('Not enough letters');
     shakeRow();
@@ -338,17 +351,19 @@ function submitGuess() {
   
   const guess = gameState.currentGuess;
   const result = getGuessResult(guess);
+  const currentRow = gameState.guesses.length;
   
-  revealGuess(guess, result);
   gameState.guesses.push(guess);
   gameState.currentGuess = '';
+  
+  revealGuess(currentRow, guess, result);
   
   // Check win/lose
   if (guess === gameState.solution) {
     gameState.won = true;
     gameState.gameOver = true;
     setTimeout(() => {
-      bounceRow(gameState.guesses.length - 1);
+      bounceRow(currentRow);
       updateStats(true);
       setTimeout(() => showResult(), 1500);
     }, WORD_LENGTH * 300 + 300);
@@ -392,11 +407,13 @@ function getGuessResult(guess) {
 }
 
 // Reveal guess with animation
-function revealGuess(guess, result) {
-  const row = boardEl.children[gameState.guesses.length];
+function revealGuess(rowIndex, guess, result) {
+  const row = boardEl.children[rowIndex];
+  if (!row) return;
   
   for (let i = 0; i < WORD_LENGTH; i++) {
     const tile = row.children[i];
+    if (!tile) continue;
     
     setTimeout(() => {
       tile.classList.add('reveal');
@@ -435,6 +452,7 @@ function updateKeyboardColors() {
 // Shake row animation
 function shakeRow() {
   const row = boardEl.children[gameState.guesses.length];
+  if (!row) return;
   row.classList.add('shake');
   setTimeout(() => row.classList.remove('shake'), 400);
 }
@@ -442,9 +460,12 @@ function shakeRow() {
 // Bounce row animation
 function bounceRow(rowIndex) {
   const row = boardEl.children[rowIndex];
+  if (!row) return;
   for (let i = 0; i < row.children.length; i++) {
     setTimeout(() => {
-      row.children[i].classList.add('bounce');
+      if (row.children[i]) {
+        row.children[i].classList.add('bounce');
+      }
     }, i * 100);
   }
 }
