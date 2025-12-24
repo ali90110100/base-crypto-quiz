@@ -169,7 +169,7 @@ function getTodaysPuzzle() {
 // Initialize the game
 function initGame() {
   // Clear old game data to ensure fresh evaluation with fixed algorithm
-  const GAME_VERSION = 2;
+  const GAME_VERSION = 3;
   const savedVersion = localStorage.getItem('cryptoPuzzleVersion');
   if (savedVersion !== String(GAME_VERSION)) {
     localStorage.removeItem('cryptoPuzzleGame');
@@ -383,26 +383,28 @@ function submitGuess() {
 
 // Get guess result - follows official Wordle rules
 function getGuessResult(guess) {
-  const solution = gameState.solution.toUpperCase();
-  const guessUpper = guess.toUpperCase();
-  const result = Array(WORD_LENGTH).fill('absent');
-  const solutionUsed = Array(WORD_LENGTH).fill(false);
+  // Convert to arrays for reliable character access
+  const solutionArr = gameState.solution.toUpperCase().split('');
+  const guessArr = guess.toUpperCase().split('');
+  const result = ['absent', 'absent', 'absent', 'absent', 'absent'];
+  const solutionUsed = [false, false, false, false, false];
   
-  // First pass: mark exact position matches (GREEN)
-  for (let i = 0; i < WORD_LENGTH; i++) {
-    if (guessUpper[i] === solution[i]) {
+  // FIRST PASS: Mark exact position matches as GREEN
+  for (let i = 0; i < 5; i++) {
+    if (guessArr[i] === solutionArr[i]) {
       result[i] = 'correct';
       solutionUsed[i] = true;
     }
   }
   
-  // Second pass: mark letters in wrong position (YELLOW)
-  // Only if that letter exists in an unused position of the solution
-  for (let i = 0; i < WORD_LENGTH; i++) {
+  // SECOND PASS: Mark wrong position matches as YELLOW
+  for (let i = 0; i < 5; i++) {
+    // Skip if already green
     if (result[i] === 'correct') continue;
     
-    for (let j = 0; j < WORD_LENGTH; j++) {
-      if (!solutionUsed[j] && guessUpper[i] === solution[j]) {
+    // Look for this letter in unused positions of solution
+    for (let j = 0; j < 5; j++) {
+      if (!solutionUsed[j] && guessArr[i] === solutionArr[j]) {
         result[i] = 'present';
         solutionUsed[j] = true;
         break;
@@ -410,7 +412,7 @@ function getGuessResult(guess) {
     }
   }
   
-  // All remaining letters stay 'absent' (GRAY)
+  // All remaining stay 'absent' (GRAY)
   return result;
 }
 
